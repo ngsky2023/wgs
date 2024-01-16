@@ -6,6 +6,7 @@ WGS Pipeline
 
 ## Software Requirements
 
+```
 python>=3.5
 perl=5.24.1
 java=1.8.0_162
@@ -30,6 +31,7 @@ annovar=2017Jul16
 transvar=2.3.4.20161215
 vep=ensembl-tools-release-85
 pvacseq=4.0.10
+```
 
 ## Download and Install
 
