@@ -1,0 +1,2 @@
+tumor_sample	/path/tumor_sample_1.fastq.gz	/path/tumor_sample_2.fastq.gz	H1	L1
+normal_sample	/path/normal_sample_1.fastq.gz	/path/normal_sample_2.fastq.gz	H1	L1

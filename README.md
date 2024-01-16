@@ -1,24 +1,45 @@
-wgs
+WGS Pipeline
 ===
 
-### 说明
+## Summary
+  The WGS Pipeline is used to analyze human whome genome data for somatic SNV/INDEL, somatic CNV, somatic SV, Germline mutation, as well as other downstream analysis such as cancer driver gene prediction and mutational signature.     
 
-capSMART2.0是对`/share/work3/capsmart/pipeline/capSMART/CAPcSMART/capSMART/capSMART_8nt.sjm.nojoin.current.py`
+## Software Requirements
 
-的一个封装，将各程序模块进行独立拆分，并将其放在对应的文件夹中。可用于流程中替代`capSMART_8nt.sjm.nojoin.current.py`.
+python>=3.5
+perl=5.24.1
+java=1.8.0_162
+R=3.4.0
+fastp=0.13.1
+split=8.28
+pigz=2.3.4
+bwa=0.7.12
+samtools=1.4
+picard=2.12.1
+sambamba=0.6.8
+gatk=3.8
+gatk=4.0.4
+strelka=2.8.4
+bcftools=1.4
+bedtools=2.19.1
+OptiType=1.3.1
+msisensor=v0.2
+manta=1.2.2
+sequenza-utils=2.1.9999b0
+annovar=2017Jul16
+transvar=2.3.4.20161215
+vep=ensembl-tools-release-85
+pvacseq=4.0.10
 
-使用方法和运行环境与`capSMART_8nt.sjm.nojoin.current.py`基本一致。
+## Download and Install
 
+git clone -b master git@github.com:ngsky2023/wgs.git 
 
-### 下载和安装:
+## Usage
 
-无需安装，直接源码运行即可：
+### 1.Help
 
-git clone ssh://git@10.100.14.39:10022/dengyong/capSMART2.0.git
-
-### 基本参数和用法：
-
-python3 /path/wgs/WGS.py -i fastq.txt  -p pair.txt -o  run -c config.txt -L  IDT37.bed
+    python3 wgs/WGS.py --help
 
 ```
  -h, --help            show this help message and exit
@@ -37,88 +58,8 @@ python3 /path/wgs/WGS.py -i fastq.txt  -p pair.txt -o  run -c config.txt -L  IDT
   -s STEP, --step STEP  run step snv,cnv,sv,ana
 ```
 
-详细示例可参考`example`目录中的`run.sh`
+### 2.Example
+    
+    2.1 python3 wgs/WGS.py -i fastq.txt  -p pair.txt -o  run -c config.txt
 
-生成的`run/.*.job`文件，通过make运行.
-
-### 开发注意事项：
-
-1. 之后大家开发时，脚本中不要出现软件、数据库等的绝对路径，统一从配置文件中读取
-
-    python两种配置文件读取方式：
-
-    方法一、与csmart/QC/同级目录中的脚本可以通过以下命令读取配置文件
-
-    ```
-    from utils import *
-    from config import config
-    conf = Config(config)
-    confDict = conf.getdict()
-    # 举例获取python路径
-    python = confDict['python']
-    ```
-
-    方法二、与csmart/QC/scripts同级目录中的脚本可以通过以下命令读取配置文件
-
-    ```
-    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-    script_base_dir = BASE_DIR.split('/csmart/')[0]
-    # 将流程根目录添加到PYTHON_PATH中
-    sys.path.append(script_base_dir)
-    #sys.path.append(os.path.join(script_base_dir,'config')) # python3 需要多添加一个路径到sys.path
-    from utils import *
-    from config import config
-
-    conf = Config(config)
-    confDict = conf.getdict()
-    # 举例获取bedtools路径
-    bedtools = confDict['bedtools']
-    ```
-
-    perl配置文件读取方式：
-
-    方法、在csmart/目录及子目录下的脚本通过以下命令读取配置文件
-
-    ```
-    use FindBin '$Bin';
-    use Config::IniFiles;
-    my $BASE_DIR=(split("/csmart/",$Bin))[0];
-    my $cfg = Config::IniFiles->new( -file => "$BASE_DIR/config/config.conf");
-    # 举例获取bedtools路径
-    my $bedtools ||= $cfg ->val('bin','bedtools');
-    ```
-
-    shell.sh配置文件读取方式：
-
-    方法、在csmart/目录及子目录下的脚本通过以下命令读取配置文件
-    ```
-    BASEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-    BASEDIR=${BASEDIR%%csmart*}
-    config=$BASEDIR/config/config.conf
-    # __readINI [配置文件路径+名称] [节点名] [键值]
-    function __readINI() {
-      INIFILE=$1
-      SECTION=$2
-      ITEM=$3
-      _readIni=`awk -F '=' '/\['$SECTION'\]/{a=1}a==1&&$1~/\s?'$ITEM'\s?/&&$1!~/\s?#/{print $2;exit}' $INIFILE`
-      echo ${_readIni}
-    }
-    # 举例获取python路径
-    python=( $( __readINI $config bin python ) ) 
-    ```
-
-2. 大家需要使用新软件和数据库时，测试时可以安装到自己目录下，测试完成之后，可以联系liuw4318@berryoncology.com拷贝到前边提到的目录下
-
-3. 之后开发的所有脚本，都要统一放到GitLab中，建议该级目录csmart/QC/下只放主脚本，csmart/QC/scripts下放该模块的子脚本
-
-
-### 更新日志
-
-#### version 4.3.1 
-+ 2023-07-24
-
-```
-1. 支持52和56 panel
-2. 654支持HRD
-3. 定制化MRD给MRD_SnvIndel添加DescNew,Abstract,NewMutFunc,并添加DCE3.0注释
-```
+    2.2 nohup make -j 50 -f run/.run.job -k -s 2>nohup.out
