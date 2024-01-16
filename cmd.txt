@@ -1,0 +1,271 @@
+#!fastp	sched	2	1	oncrd.q
+{fastp} -i {r1} -I {r2} --cut_by_quality3 -l 50 --correction -w 8 -s {fastp_s} -o {prx}.R1.fq.gz -O {prx}.R2.fq.gz -j {prx}.json -h {prx}.html --adapter_sequence GATCGGAAGAGCACACGTCTGAACTCCAGTC --adapter_sequence_r2 GATCGGAAGAGCGTCGTGTAGGGAAAGAGTG -g -x {fastpopt}
+
+#!flexbar	sched	0	4	oncrd.q
+{flexbar} -at 2 -u 1 -m 36 -ao 5 -f i1.8 --min-read-length 50 -q 30 -r {r1} -p {r2} -k 150 -a {adapter} -t {prx}
+
+#!bwa	sched	20	15	oncrd.q
+{bwa} mem -t 4 -C -R "@RG\tID:{sample}_{lane}\tPL:illumina\tSM:{sample}" {genome} {r1} {r2} | {samtools} view -bS - | {samtools} sort - -m 4G -T {prx}.tmp -o {prx}.sort.bam
+{samtools} flagstat {prx}.sort.bam > {prx}.flagstat
+
+#!bwaFor	login
+{pipeDir}/Alignment/forfMap.pl -i {txt} -p {prx} -q {queue}
+
+#!bedQC	sched	1	5	oncrd.q
+{pipeDir}/Alignment/mergeDataJson.py {dataDir}/*/*/*.json > data.txt
+{pipeDir}/Alignment/QC_exome_mem.pl -i {bam} -r {bed} -c data.txt -o {dir} -t PE -plot
+
+#!bamQC	sched	1	5	oncrd.q
+{pipeDir}/Alignment/mergeDataJson.py {dataDir}/*/*/*.json > data.txt
+{pipeDir}/Alignment/mapQCstatV2.pl -i {bam} -o {prx}.mapQC.xls -s {samtools} -r data.txt & {pipeDir}/Alignment/depth.pl -i {bam} -o {prx}.depthQC.xls -s {samtools} -q 0 -Q 0 -r {genome}
+wait
+{Rscript} {pipeDir}/Alignment/insertClass.R {prx}.mapQC.xls.insert.txt {prx}.insert.pdf
+cat {prx}.mapQC.xls {prx}.depthQC.xls > {prx}.QC.xls
+
+#!count	sched	1	5	oncrd.q
+{HMMcopy}/readCounter -w 200000 -q 60 {bam} > {sample}.200K.wig
+{pipeDir}/CNV/NormalizationCount.pl -i {sample}.200K.wig -p {sample}.200K -w 200
+{pipeDir}/CNV/mergeWindow2ArmZscore.pl -i {sample}.200K.wig > {sample}.armZscore.txt
+{Rscript} {pipeDir}/CNV/detectcnv_v1.r {sample}.200K.seqin.txt cnv 1 1 {pipeDir}/CNV/ref.cfDNA
+{pipeDir}/CNV/convertCallResult_v1.pl -i cnv/callcnv/{sample}.cnv.txt > {sample}.cnv.txt
+{pipeDir}/CNV/NormalizationCountCNVchr.pl -i {sample}.200K.wig > {sample}.chr.txt
+{pipeDir}/CNV/Segs2Vcf.pl -i {sample}.cnv.txt -d {dir}
+{perl} {annovar}/convert2annovar.pl --includeinfo --format vcf4 -allsample --outfile {sample} {sample}.cnv.vcf
+{perl} {annovar}/table_annovar.pl -buildver hg19 --remove -otherinfo --protocol refGene,wgEncodeGencodeBasicV19,cytoBand,genomicSuperDups,wgRna,targetScanS,dgvMerged,gwasCatalog,wgEncodeBroadHmmGm12878HMM,tfbsConsSites -operation g,g,r,r,r,r,r,r,r,r -nastring . {sample}.TUMOR.avinput {annovarDB} --outfile {sample}
+{pipeDir}/CNV/SCNAscore_rank.pl -i {sample}.hg19_multianno.txt > {sample}.score
+
+#!CNV	sched	1	30	oncrd.q
+{pipeDir}/CNV/selectFq2MAP.pl -i {in} -d {dir}/raw
+{MAPPING} {pipeDir}/CNV/MAPPING_config.xml {dir}/raw {dir}/MAP 
+{Rscript} {pipeDir}/CNV/detectcnv.r {dir}/MAP {dir}/cnv 5 5 {pipeDir}/CNV/reference_nB5_nS5
+{pipeDir}/CNV/convertCallResult.pl -i {dir}/cnv/callcnv/*.cnv.txt > {dir}/CNV.txt
+
+#!splitFq	sched	4	1	oncrd.q
+{pigz} -d -c -p 4 {fq} | {split} - {prx}_ -l 160000000 --filter '{pigz} -p 4 > $FILE.gz'
+
+#!rmdup	sched	6	22	oncrd.q
+#{samtools} rmdup {in} {prx}.rmdup.bam
+#{java} -Xmx6g -jar {picard}/MarkDuplicates.jar INPUT={in} OUTPUT={prx}.rmdup.bam METRICS_FILE={prx}.rmdup.metrics VALIDATION_STRINGENCY=SILENT MAX_FILE_HANDLES_FOR_READ_ENDS_MAP=1000
+{sambamba} markdup -t 30 {in} {sample}.rmdup.bam --tmpdir={sample}.tmp --overflow-list-size=8000000 --sort-buffer-size=10240
+#{samtools} index {prx}.rmdup.bam
+#ln -s {sample}.rmdup.bam.bai {sample}.rmdup.bai
+rm {in}
+
+#!mergeBam	sched	1	4	oncrd.q
+{sambamba} merge {prx}.bam {in} -t 16
+
+#!cutBam	sched	1	1	oncrd.q
+{pipeDir}/Alignment/filterMemBam.pl -i {in} -c {chr} -k {type} | {samtools} view -bS - > {prx}.bam
+{samtools} index {prx}.bam
+#cp {prx}.bam.bai {prx}.bai
+
+#!realign	sched	20	26	oncrd.q
+{java} -Xmx5G -jar {gatk} -T RealignerTargetCreator -R {genome} -I {in} -o {prx}.intervals -known {dbsnp} -L {chr}
+{java} -Xmx16G -jar {gatk} -T IndelRealigner -R {genome} -targetIntervals {prx}.intervals -I {in} -o {prx}.realn.bam -known {dbsnp} -L {chr}
+{java} -Xmx16G -jar {gatk} -T BaseRecalibrator -R {genome} -I {prx}.realn.bam -knownSites {dbsnp} -o {prx}.grp -L {chr} -nct 4
+{java} -Xmx16G -jar {gatk} -T PrintReads -R {genome} -I {prx}.realn.bam -BQSR {prx}.grp -o {prx}.over.bam -L {chr} -nct 4
+{samtools} index {prx}.over.bam
+rm {in}
+rm {prx}.realn.bam
+
+#!Mutect2	sched	6	10	oncrd.q
+{gatk4} --java-options "-Xmx8g" Mutect2 -R {genome} {in} -O {prx}.gatk4.vcf.gz -pon {PoN} -L {chr} --native-pair-hmm-threads 8 --max-reads-per-alignment-start 10000
+{gatk4} --java-options "-Xmx2g" FilterMutectCalls -V {prx}.gatk4.vcf.gz -O {prx}.raw.vcf.gz -XL {excludable}
+{pipeDir}/SnvIndel/Filter_Somatic_VCF.pl -inputvcf {prx}.raw.vcf.gz -outputvcf {prx}.filter -Caller gatk4 -T_depth 8 -T_depth_Var 4 -N_depth 8 -T_Var_Strand 2 -T_Var_Frac 0.01 -N_Var_Frac 0.1
+#{perl} {pipeDir}/SnvIndel/combinePosInGatkVcf.pl -i {prx}.f.vcf > {prx}.filter.vcf
+
+#!MuTect2	sched	1	20	oncrd.q
+{java} -Xmx8G -jar {gatk} -T MuTect2 -R {genome} -I:tumor {tumor} -I:normal {normal} --dbsnp {dbsnp} --cosmic {cosmic} -minPruning 4 -o {prx}.raw.vcf
+{pipeDir}/SnvIndel/Filter_Somatic_VCF.pl -inputvcf {prx}.raw.vcf -outputvcf {prx}.filter -Caller mutect2 -T_depth 8 -T_depth_Var 4 -N_depth 8 -N_depth_Var 2 -T_Var_Strand 2 -T_Var_Frac 0.01 -SomaticP 0.05
+
+#!annovar	sched	1	9	oncrd.q
+{perl} {annovar}/convert2annovar.pl --includeinfo --format vcf4 --allsample --outfile {prx} {in}
+{transvar} ganno --refseq --vcf {in} > transvar.vcf
+{perl} {annovar}/table_annovar.pl --buildver hg19 --thread 2 --remove --otherinfo --protocol {annovarprotocol} -operation {annovaroperation} -nastring . {prx}.{sapl}.avinput {annovarDB} --outfile {prx}
+{perl} {pipeDir}/SnvIndel/add_hgvs_0216.pl {dbsnpHGVS} {prx}.hg19_multianno.txt {prx}.hg19_multianno.txt.new
+{perl} {pipeDir}/SnvIndel/fixAnn.pl transvar.vcf -i {prx}.hg19_multianno.txt.new > {prx}.hg19_multianno.txt
+{perl} {pipeDir}/SnvIndel/anno_table.Tp.pl -i {prx}.hg19_multianno.txt -o {prx}.xls -n {sample} -s MuTect2 -a {kegg}
+
+#!mergeSNP	sched	1	1	oncrd.q
+{pipeDir}/SnvIndel/mergeVcfStat.pl -i {vdir}/chr*/{sample}*.filter.vcf -p {sample}
+{pipeDir}/SnvIndel/mergeAnvStat.pl -i {adir}/chr*/{sample}*.xls -p {sample} -v {sample}.vcf
+cut -f 10 {sample}.xls | sed '1d'  | sort | uniq -c | sed 's/^\s*//' | sed 's/ /\t/' > {sample}.dis
+sh ../../strelka/{sample}/strelka_{sample}.sh
+{perl} {pipeDir}/SnvIndel/compareMut.pl -s ../../strelka/{sample}/{sample}.f.xls -g {sample}.xls -p {sample}.compare | sort -k 2,2 -k 3n,3 -k 4n,4 > {sample}.overlap.xls
+#{perl} {pipeDir}/SnvIndel/pickVCF.pl {sample}.overlap.xls -i ../../strelka/{sample}/somatic.strelka.vcf > $sample.overlap.vcf
+{perl} {pipeDir}/SnvIndel/combineSNP.pl -b ../../../bam/rmdup/{sample}/*/{sample}.*.rmdup.bam -i {sample}.overlap.xls > {sample}.final.xls
+
+
+#!SVanno	sched	1	1	oncrd.q
+{perl} {annovar}/convert2annovar.pl --includeinfo --format vcf4 -allsample --outfile {prx} {in}
+{perl} {annovar}/table_annovar.pl -buildver hg19 --remove -otherinfo --protocol refGene,wgEncodeGencodeBasicV19,cytoBand,genomicSuperDups,wgRna,targetScanS,dgvMerged,gwasCatalog,wgEncodeBroadHmmGm12878HMM,tfbsConsSites -operation g,g,r,r,r,r,r,r,r,r -nastring . {prx}.TUMOR.avinput {annovarDB} --outfile {prx}
+#{pipeDir}/SV/inrMantaVcfAnnot.pl -i {prx}.hg19_multianno.txt -p {prx}
+
+#!pcgr	sched	1	2	oncrd.q
+source {pcgr}/source.bash
+{pipeDir}/Tools/prePcgr.pl -i {in} > {prx}.vcf
+{pcgr}/pcgr_noDocker.py {pcgr} {outdir} {sample} --input_vcf {prx}.vcf 
+{pipeDir}/Tools/mergeReport.pl {annot} {prx}.pcgr.snvs_indels.tiers.tsv > {prx}.xls
+
+#!crest_start	login
+source {crest}/../CREST.Activation.sh 
+{crest}/DependenceSoft/Blat_34/gfServer start {host} {port} -canStop {2bit} > gfServer.log
+
+#!crest_stop	login
+{crest}/DependenceSoft/Blat_34/gfServer stop {host} {port}
+
+#!crest	sched	1	30	oncrd.q
+source {crest}/../CREST.Activation.sh 
+{perl} -I{crest} {crest}/extractSClip.pl -i {bam} -g {genome} -o {outdir} -r {chr}
+{perl} -I{crest} {crest}/CREST.pl {in} --ref_genome {genome} -f {outdir}/{base}.{chr}.cover -t {2bit} --blatserver {host} --blatport {port} -o {outdir} -r {chr}
+{perl} {crest}/../anno_sv.pl {outdir}/{base}.predSV.txt {gff} {outdir}/{base}.predSV.xls
+
+#!VirusFinder	sched	1	30	oncrd.q
+{VirusFinder} -c {cfg} --output {out}
+
+#!TitanCNA	sched	1	1	oncrd.q
+echo 1
+
+#!CNVresult	sched	1	10	oncrd.q
+sh {pipeDir}/CNV/purple.sh {T} {N} {ts} {ns}
+
+#!wgsa	sched	10	10	oncrd.q
+{pipeDir}/Tools/wgsaSetting.py {in} {prx} > {prx}.setting
+echo Understand | java -cp {wgsa} WGSA07 {prx}.setting -i vcf -v hg19 -m 30 -t 30
+sh {prx}.setting.sh
+
+#!Meerkat	sched	1	10	oncrd.q
+sh {pipeDir}/SV/Meerkat.sh {tumor} {normal}
+
+#!manta	sched	1	5	oncrd.q
+{manta} --normalBam {Nbam} --tumorBam {Tbam} --referenceFasta {genome} --runDir {dir}
+cd {dir}/
+./runWorkflow.py -m local -j {num}
+perl {pipeDir}/SV/fixMantaVcf.pl -i {dir}/results/variants/somaticSV.vcf.gz > somaticSV.vcf
+perl {pipeDir}/SV/filterPosN.pl -i somaticSV.vcf 2> somaticSV.f.vcf.ex
+{vcfToBedpe} -i somaticSV.filter.vcf -o {dir}/somaticSV.bedpe
+sed '1d' somaticSV.bedpe  | perl -F"\t" -lane 'print join("\t",(@F[0..2],0,0))' > pos1.txt
+sed '1d' somaticSV.bedpe  | perl -F"\t" -lane 'print join("\t",(@F[3..5],0,0))' > pos2.txt
+{perl} {annovar}/table_annovar.pl -buildver hg19 --remove -otherinfo --protocol refGene -operation g -nastring . pos1.txt {annovarDB} --outfile ann1
+{perl} {annovar}/table_annovar.pl -buildver hg19 --remove -otherinfo --protocol refGene -operation g -nastring . pos2.txt {annovarDB} --outfile ann2
+cut -f 6-8 ann1.hg19_multianno.txt > ann1.txt
+cut -f 6-8 ann2.hg19_multianno.txt > ann2.txt
+{perl} {pipeDir}/SV/mantaAddSTRAND.pl somaticSV.vcf -i somaticSV.bedpe | paste - ann1.txt ann2.txt > {sample}.somaticSV.xls
+#{pipeDir}/SV/bamVirus.pl -i {Tbam} | {pipeDir}/SV/annBamVirus.pl -i - > virus.txt
+#sh {pipeDir}/SV/smoove.sh {sample} {Tbam} {Nbam}
+
+#!mantaGermline	sched	7	4	oncrd.q
+{manta} --bam {bam} --referenceFasta {genome} --runDir {dir}
+cd {dir}/
+#./runWorkflow.py -m sge -q {queue} -j {num} -g 1
+./runWorkflow.py -m local -j 8 -g 20
+zcat {dir}/results/variants/diploidSV.vcf.gz | sed 's/<DUP:TANDEM>/<DUP>/' > {dir}/diploidSV.vcf
+{perl} {annovar}/convert2annovar.pl --includeinfo --format vcf4 -allsample --outfile {prx} {dir}/diploidSV.vcf
+{perl} {annovar}/table_annovar.pl -buildver hg19 --remove -otherinfo --protocol refGene,wgEncodeGencodeBasicV19,cytoBand,genomicSuperDups,wgRna,targetScanS,dgvMerged,gwasCatalog,wgEncodeBroadHmmGm12878HMM,tfbsConsSites -operation g,g,r,r,r,r,r,r,r,r -nastring . {prx}.{sample}.avinput {annovarDB} --outfile {prx}
+{pipeDir}/SV/inrMantaVcfAnnot.pl -i {prx}.hg19_multianno.txt -p {prx}
+
+#!strelka	sched	1	5	oncrd.q
+{strelka} --normalBam={Nbam} --tumorBam={Tbam} --referenceFasta={genome} --runDir={dir}
+./runWorkflow.py -m local -j {num}
+{pipeDir}/SnvIndel/FilterStrelka.pl -s {dir}/results/variants/somatic.snvs.vcf.gz -i {dir}/results/variants/somatic.indels.vcf.gz > {dir}/somatic.strelka.vcf 2> {dir}/somatic.strelka.log
+sh {pipeDir}/SnvIndel/ann.sh {dir}/somatic.strelka.vcf {sample}
+perl {pipeDir}/SnvIndel/f.pl -i {sample}.xls > {sample}.f.xls
+
+#!purity	sched	2	2	oncrd.q
+{samtools} view -h -F 1024 -q 20 {normal} -L {bed} |samtools view -bS - >  normal.bam & {samtools} view -h -F 1024 -q 20 {tumor} -L {bed} | samtools view -bS - > tumor.bam
+wait
+ls > /dev/null
+{sequenza-utils} bam2seqz -n normal.bam -t tumor.bam -gc {pipeDir}/Database/hg19.gc50Base.txt.gz -F {genome} -S /share/public/software/samtools/0.1.18/samtools | {sequenza-utils} seqz_binning -w 50 -s - | gzip > sample.samll_seqs.gz
+R_LIBS=/share/work1/wangrr/local/Rlib/ {Rscript} {pipeDir}/Analysis/sequenza.R sample.samll_seqs.gz {sample}
+rm tumor.bam normal.bam sample.samll_seqs.gz
+
+#!CCF	sched	1	1	oncrd.q
+#{pipeDir}/Analysis/merge.cnv_purity_AF.pl {snv} {cnv} {purity} {prx}.AF_CN_purity.xls
+#{pipeDir}/Analysis/CI_CCF.pl {prx}.AF_CN_purity.xls {prx}.CI_CCF.xls
+sh {pipeDir}/Analysis/PyClone.sh {sample} {snv} {cnv} {purity}
+
+#!msi	sched	20	4	oncrd.q
+#{samtools} view -h -F 1024 -q 20 {normal} -L {bed} |samtools view -bS - >  normal.bam & {samtools} view -h -F 1024 -q 20 {tumor} -L {bed} | samtools view -bS - > tumor.bam
+#{msisensor} msi -z 1 -b 32 -d {msi_site} -n normal.bam -t tumor.bam -o {prx}.msi {bed} || echo over
+{msisensor} msi -z 1 -b 32 -d {pipeDir}/Database/{msi_site} -n {normal} -t {tumor} -o {prx}.msi {bed} || echo over
+
+#!HaplotypeCaller	sched	8	15	oncrd.q
+{java} -Xmx8G -jar {gatk} -R {genome} -I {bam} -T HaplotypeCaller -ERC GVCF -L {chr} -o {prx}.g.vcf
+echo {prx}.g.vcf > {prx}.gvcf.list
+{java} -Xmx6g -jar {gatk} -R {genome} -T GenotypeGVCFs -V {prx}.gvcf.list --dbsnp {dbsnp} -stand_call_conf 50 -A ReadPosRankSumTest -A MappingQualityRankSumTest -o {prx}.raw.vcf -L {chr}
+
+#!gatk4HaplotypeCaller	sched	4	10	oncrd.q
+{gatk4} --java-options "-Xmx6g" HaplotypeCaller -R {genome} -I {bam} -ERC GVCF -L {chr} -O {prx}.g.vcf.gz --native-pair-hmm-threads 8
+{gatk4} --java-options "-Xmx2g" GenotypeGVCFs -R {genome} -V {prx}.g.vcf.gz --dbsnp {dbsnp} -stand-call-conf 50 -A ReadPosRankSumTest -A MappingQualityRankSumTest -O {prx}.raw.vcf -L {chr}
+
+#!mergeGermline	sched	1	10	oncrd.q
+{pipeDir}/Germline/CatVariants.sh {prx}.raw.vcf {vdir}/chr*/{sample}*.raw.vcf
+#{java} -Xmx6g -jar {gatk} -R {genome} -T VariantRecalibrator -input {prx}.raw.vcf -resource:hapmap,known=false,training=true,truth=true,prior=15.0 {gatk_bundles}/hapmap_3.3.hg19.sites.vcf -resource:omni,known=false,training=true,truth=true,prior=12.0 {gatk_bundles}/1000G_omni2.5.hg19.sites.vcf -resource:1000G,known=true,training=false,truth=false,prior=10.0 {gatk_bundles}/1000G_phase1.snps.high_confidence.hg19.sites.vcf -resource:dbsnp,known=true,training=false,truth=false,prior=2.0 {gatk_bundles}/dbsnp_138.hg19.vcf  -an DP -an QD -an MQRankSum -an ReadPosRankSum -an MQ -an FS -an SOR -mode SNP --maxGaussians 6 -recalFile {prx}.snp_recal -tranche 100 -tranche 99.95 -tranche 99.9 -tranche 99.8 -tranche 99.5 -tranche 99.0 -tranche 98.0 -tranche 95.0 -tranche 90.0 -tranchesFile {prx}.snp_tranches -rscriptFile {prx}.snp_plots.R
+#{java} -Xmx6g -jar {gatk} -R {genome} -T ApplyRecalibration -input {prx}.raw.vcf --mode SNP --ts_filter_level 99.5 -recalFile {prx}.snp_recal -tranchesFile {prx}.snp_tranches -o {prx}.raw.indel_raw.vcf
+{java} -Xmx6g -jar {gatk} -R {genome} -T VariantRecalibrator -input {prx}.raw.vcf -resource:mills,known=fasle,training=true,truth=true,prior=12.0 {gatk_bundles}/Mills_and_1000G_gold_standard.indels.hg19.sites.vcf -resource:dbsnp,known=true,training=false,truth=false,prior=2.0 {gatk_bundles}/dbsnp_138.hg19.vcf -an DP -an QD -an MQRankSum -an ReadPosRankSum -an MQ -an FS -an SOR -mode INDEL --maxGaussians 6 -recalFile {prx}.indel_recal -tranche 100 -tranche 99.95 -tranche 99.9 -tranche 99.8 -tranche 99.5 -tranche 99.0 -tranche 98.0 -tranche 95.0 -tranche 90.0 -tranchesFile {prx}.indel_tranches -rscriptFile {prx}.indel_plots.R
+{java} -Xmx6g -jar {gatk} -R {genome} -T ApplyRecalibration -input {prx}.raw.vcf --mode INDEL --ts_filter_level 95.0 -recalFile {prx}.indel_recal -tranchesFile {prx}.indel_tranches -o {prx}.recal.vcf
+{java} -Xmx6g -jar {gatk} -R {genome} -T SelectVariants -V {prx}.recal.vcf -selectType SNP -selectType MNP -env -o {prx}.recal.snp.vcf
+{java} -Xmx6g -jar {gatk} -R {genome} -T SelectVariants -V {prx}.recal.vcf -selectType INDEL -env -o {prx}.recal.indel.vcf
+{java} -Xmx6g -jar {gatk} -R {genome} -T VariantFiltration -V {prx}.recal.snp.vcf -filter "DP < 4 || DP >1000" --filterName "LowDepth" -filter "QD < 2.0 || FS > 60.0 || MQ < 40.0 || MQRankSum < -12.5 || ReadPosRankSum < -8.0" --filterName "snp_hard_filter" -o {prx}.recal.snp.filter.vcf
+{java} -Xmx6g -jar {gatk} -R {genome} -T VariantFiltration -V {prx}.recal.indel.vcf -filter "DP < 4 || DP >1000" --filterName "LowDepth" -filter "QD < 2.0 || FS > 200.0 || ReadPosRankSum < -20.0" -filterName "INDEL_hard_filter" -o {prx}.recal.indel.filter.vcf
+{java} -Xmx6g -jar {gatk} -R {genome} -T SelectVariants -V {prx}.recal.snp.filter.vcf -ef -o {prx}.recal.snp.filter.pass.vcf
+{java} -Xmx6g -jar {gatk} -R {genome} -T SelectVariants -V {prx}.recal.indel.filter.vcf -ef -o {prx}.recal.indel.filter.pass.vcf
+cp {prx}.recal.snp.filter.pass.vcf {prx}.filter.vcf
+grep -v '^#' {prx}.recal.indel.filter.pass.vcf >> {prx}.filter.vcf
+{pipeDir}/Germline/pickGermlineAnn.pl -v {prx}.filter.vcf -i {annDir}/chr*/*.chr*.xls > {prx}.xls
+
+#!merge4Germline	sched	1	10	oncrd.q
+{pipeDir}/Germline/CatVariants.sh {prx}.raw.vcf {vdir}/chr*/{sample}*.raw.vcf
+{gatk} --java-options "-Xmx2g" VariantRecalibrator -R {genome} -V {prx}.raw.vcf --resource hapmap,known=false,training=true,truth=true,prior=15.0:{gatk_bundles}/hapmap_3.3.hg19.sites.vcf --resource omni,known=false,training=true,truth=true,prior=12.0:{gatk_bundles}/1000G_omni2.5.hg19.sites.vcf --resource 1000G,known=true,training=false,truth=false,prior=10.0:{gatk_bundles}/1000G_phase1.snps.high_confidence.hg19.sites.vcf --resource dbsnp,known=true,training=false,truth=false,prior=2.0:{gatk_bundles}/dbsnp_138.hg19.vcf -an QD -an MQRankSum -an ReadPosRankSum -an MQ -an FS -an SOR -mode SNP --max-gaussians 4 -O {prx}.snp.recal -tranche 100 -tranche 99.95 -tranche 99.9 -tranche 99.8 -tranche 99.5 -tranche 99.0 -tranche 98.0 -tranche 95.0 -tranche 90.0 --tranches-file {prx}.snp.tranches --rscript-file {prx}.plots.R 
+{gatk} --java-options "-Xmx2g" ApplyVQSR -R {genome} -V {prx}.raw.vcf --mode SNP -ts-filter-level 99.5 --recal-file {prx}.snp.recal --tranches-file {prx}.snp.tranches -O {prx}.raw.indel_raw.vcf 
+{gatk} --java-options "-Xmx2g" VariantRecalibrator -R {genome} -V {prx}.raw.indel_raw.vcf --resource mills,known=fasle,training=true,truth=true,prior=12.0:{gatk_bundles}/Mills_and_1000G_gold_standard.indels.hg19.sites.vcf --resource dbsnp,known=true,training=false,truth=false,prior=2.0:{gatk_bundles}/dbsnp_138.hg19.vcf -an QD -an MQRankSum -an ReadPosRankSum -an MQ -an FS -an SOR -mode INDEL --max-gaussians 4 -O {prx}.indel.recal -tranche 100 -tranche 99.95 -tranche 99.9 -tranche 99.8 -tranche 99.5 -tranche 99.0 -tranche 98.0 -tranche 95.0 -tranche 90.0 --tranches-file {prx}.indel.tranches --rscript-file {prx}.indel.plots.R 
+{gatk} --java-options "-Xmx2g" ApplyVQSR -R {genome} -V {prx}.raw.indel_raw.vcf --mode INDEL -ts-filter-level 90.0 --recal-file {prx}.indel.recal --tranches-file {prx}.indel.tranches -O {prx}.recal.vcf 
+{gatk} --java-options "-Xmx2g" SelectVariants -R {genome} -V {prx}.recal.vcf -select-type SNP -select-type MNP --exclude-non-variants -O {prx}.recal.snp.vcf
+{gatk} --java-options "-Xmx2g" SelectVariants -R {genome} -V {prx}.recal.vcf -select-type INDEL --exclude-non-variants -O {prx}.recal.indel.vcf
+{gatk} --java-options "-Xmx2g" VariantFiltration -V {prx}.recal.snp.vcf -filter "DP < 4 || DP >500" --filter-name "LowDepth" -filter "QD < 2.0 || FS > 60.0 || MQ < 40.0 || MQRankSum < -12.5 || SOR > 3.0 || ReadPosRankSum < -8.0" --filter-name "snp_hard_filter" -O {prx}.recal.snp.filter.vcf
+{gatk} --java-options "-Xmx2g" VariantFiltration -R {genome} -V {prx}.recal.indel.vcf -filter "DP < 4 || DP >500" --filter-name "LowDepth" -filter "QD < 2.0 || SOR > 10.0 || FS > 200.0 || ReadPosRankSum < -20.0" -filter-name "INDEL_hard_filter" -O {prx}.recal.indel.filter.vcf
+{gatk} --java-options "-Xmx2g" SelectVariants -R {genome} -V {prx}.recal.snp.filter.vcf --exclude-filtered -O {prx}.recal.snp.filter.pass.vcf
+{gatk} --java-options "-Xmx2g" SelectVariants -R {genome} -V {prx}.recal.indel.filter.vcf --exclude-filtered -O {prx}.recal.indel.filter.pass.vcf
+cp {prx}.recal.snp.filter.pass.vcf {prx}.filter.vcf
+grep -v '^#' {prx}.recal.indel.filter.pass.vcf >> {prx}.filter.vcf
+{pipeDir}/Germline/pickGermlineAnn.pl -v {prx}.filter.vcf -i {annDir}/chr*/*.chr*.xls > {prx}.xls
+
+#!hlaTyping	sched	1	1	oncrd.q
+{samtools} view -b {bam} chr6:29691305-31431115 | samtools fastq - -1 {dir}/HLA_1.fq -2 {dir}/HLA_2.fq
+{OptiType} -i {dir}/HLA_1.fq {dir}/HLA_2.fq --dna -v -o {dir}/run
+rm {dir}/HLA_1.fq {dir}/HLA_2.fq
+
+#!geneCNV	sched	4	10	oncrd.q
+echo -e ".\t{Ns}" > sample.list
+echo -e ".\t{Ts}" >> sample.list
+ls {Nbam} {Tbam} > BAM.list
+{java} -Xmx10G -jar {gatk} -T DepthOfCoverage -I BAM.list -L {bed} -R {genome} -o DepthOfCoverage --minBaseQuality 0 --minMappingQuality 20 --start 1 --stop 500 --nBins 200 --includeRefNSites --countType COUNT_FRAGMENTS
+sed -i "s/-/_/g" sample.list
+sed -i "1s/-/_/g" DepthOfCoverage.sample_interval_summary
+{Rscript} {pipeDir}/CNV/LRR_Calculation.R sample.list DepthOfCoverage.sample_interval_summary Somatic_LRR.txt
+{perl} {pipeDir}/CNV/GeneBasedSegmentationCNV.pl {bed} Somatic_LRR.txt Somatic_LRR_Summary.txt Somatic_CNV_Summary.txt T
+rm DepthOfCoverage
+
+#!pvacseq	sched	1	2	oncrd.q
+{perl} {pipeDir}/Analysis/pvacseqPickVcfByReport.pl -i {ann} -v {in} > {sample}.in.vcf
+{perl} {vepDir}/variant_effect_predictor.pl --input_file {sample}.in.vcf --format vcf --output_file {sample}.vep.vcf --vcf --symbol --terms SO --plugin Downstream --plugin Wildtype --dir {vepDir}/.vep --fasta {vepDir}/.vep/homo_sapiens/85_GRCh37/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa.gz --force_overwrite --species homo_sapiens --assembly GRCh37 --cache --no_progress --offline
+cut -f 1-8 {sample}.vep.vcf > {sample}.pvacseq.vcf
+{pvacseq} run {sample}.pvacseq.vcf pvacseq HLA-$(cat {hladir}/run/*/*_result.tsv | tail -1 | cut -f 2-7 | sed 's/\t/,HLA-/g') NetMHCpan PickPocket NNalign ./antigen/ -e 9 --iedb-install-directory {iedb}
+{pipeDir}/Analysis/pastePvacseq.pl -i antigen/MHC_Class_I/pvacseq.final.tsv -d ./
+{pipeDir}/Analysis/makeAntigenResult.pl -i affinity.result.txt -a {ann} > antigen.txt 
+
+#!acmg	login
+echo {perl} {pipeDir}/Germline/somaticBam2germ.pl -i {txt} -b {bed} | qsub -cwd -l vf=5g -sync y -q {queue} -N somaticBam2germ
+source {pipeDir}/bashrc 
+{perl} {pipeDir}/CaptureseqBRCA_v3.3.0/main_pipe_manual.pl -que {queue} -i sample -o analysis -c {pipeDir}/CaptureseqBRCA_v3.3.0/config.ACMG_GyneV1.3.txt -s 3 -cut 5
+sh {pipeDir}/Germline/strelka.sh sample {dbsnpHGVS} {annovarDB} {annovar} {strelka_germ} {genome} 
+
+#!result	login
+paste {dir}/bam/QC/*/*_QC.xls | perl {pipeDir}/Result/QC_merge.pl - > QC.xls
+mkdir -p raw
+ln {dir}/snv-indel/result/*/*.xls raw/
+{perl} {pipeDir}/Result/MutReport.pl -input {dir}/snv-indel/result/*/*.xls -outdir ./ -popfreq 0.05 -mode somatic -pname result -var_freq 0.03 -totalD 50 -varD 4
+{perl} {pipeDir}/Result/tmb.pl -i result_Somatic_Report.xls -b {bed} -s result_Somatic_Synonymous.xls > TMB.xls
+{perl} {pipeDir}/Result/mergeCNV.pl -i {dir}/cnv/*/Somatic_CNV_Summary.txt > CNV.xls
+{perl} {pipeDir}/Result/tab2Excel.pl -i QC.xls result_Somatic_Report.xls TMB.xls CNV.xls -o result
+
