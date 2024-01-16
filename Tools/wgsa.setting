@@ -1,0 +1,84 @@
+input file name:					{in}                #name of the input file
+output file name:                   {out}             #name of the output file
+resources dir:                      /share/public/database/WGSA/                                  #the location of the resouces folder
+annovar dir:                        /share/public/database/Annovar/2017Jul16/                    #the location of the ANNOVAR annotate_variation.pl
+snpeff dir:                         /share/work1/wangrr/local/wgsa/snpEff/                              #the location of the snpEff snpEff.jar
+vep dir:                            /share/public/software/ensembl-tools-release-85/scripts/variant_effect_predictor/   #the location of the VEP variant_effect_predictor.pl
+.vep dir:                           /share/work1/wangrr/local/pcgr-0.3.4/data/.vep/                                       #the location of the .vep folder
+tmp dir:                            {dir}/tmp                                        #the location of the tmp folder, used for VEP on-the-fly annotation
+work dir:                           {dir}                                       #the location of the working folder, used for storing intermediate files
+retain intermediate file:           n                            #supported option: snp or s, indel or i, both or b, no or n
+ANNOVAR/Ensembl:                    b                            #supported option: snp or s, indel or i, both or b, no or n
+ANNOVAR/RefSeq:                     b                            #supported option: snp or s, indel or i, both or b, no or n
+ANNOVAR/UCSC:                       b                            #supported option: snp or s, indel or i, both or b, no or n
+SnpEff/Ensembl:                     n                            #supported option: snp or s, indel or i, both or b, no or n
+SnpEff/RefSeq:                      n                            #supported option: snp or s, indel or i, both or b, no or n
+VEP/Ensembl:                        n                            #supported option: snp or s, indel or i, both or b, no or n
+VEP/RefSeq:                         n                            #supported option: snp or s, indel or i, both or b, no or n
+gene-model annotation on the fly:   n                            #supported option: snp or s, indel or i, both or b, no or n
+dbSNP:                              b                            #supported option: snp or s, indel or i, both or b, no or n
+snoRNA miRNA:                       b                            #supported option: snp or s, indel or i, both or b, no or n
+UTR3 miRNA target:                  b                            #supported option: snp or s, indel or i, both or b, no or n
+scSNV deleteriousness prediction:   b                            #supported option: snp or s, indel or i, both or b, no or n
+SPIDEX:                             n                            #supported option: snp or s, indel or i, both or b, no or n
+GWAS catalog:                       b                            #supported option: snp or s, indel or i, both or b, no or n
+GRASP:                              b                            #supported option: snp or s, indel or i, both or b, no or n
+Clinvar:                            b                            #supported option: snp or s, indel or i, both or b, no or n
+COSMIC:                             n                            #supported option: snp or s, indel or i, both or b, no or n
+GTEx:                               b                            #supported option: snp or s, indel or i, both or b, no or n
+Duke mappability:                   b                            #supported option: snp or s, indel or i, both or b, no or n
+Duke mappability (+-149bp):         b                            #supported option: snp or s, indel or i, both or b, no or n
+Genome mappability score:           b                            #supported option: snp or s, indel or i, both or b, no or n
+1000G mask:                         b                            #supported option: snp or s, indel or i, both or b, no or n
+RepeatMasker:                       b                            #supported option: snp or s, indel or i, both or b, no or n
+EPO ancestral:                      n                            #supported option: snp or s, no or n
+AltaiNeandertal genotypes:          n                            #supported option: snp or s, no or n
+Denisova genotypes:                 n                            #supported option: snp or s, no or n
+VindijiaNeandertal genotypes:       n                            #supported option: snp or s, no or n
+PhyloP_primate:                     b                            #supported option: snp or s, indel or i, both or b, no or n
+PhyloP_placental:                   b                            #supported option: snp or s, indel or i, both or b, no or n
+PhyloP_vertebrate:                  b                            #supported option: snp or s, indel or i, both or b, no or n
+PhastCons_primates:                 b                            #supported option: snp or s, indel or i, both or b, no or n
+PhastCons_placental:                b                            #supported option: snp or s, indel or i, both or b, no or n
+PhastCons_vertebrate:               b                            #supported option: snp or s, indel or i, both or b, no or n
+GERP++:                             b                            #supported option: snp or s, indel or i, both or b, no or n
+SiPhy:                              b                            #supported option: snp or s, indel or i, both or b, no or n
+fitCons:                            b                            #supported option: snp or s, indel or i, both or b, no or n
+GenoCanyon:                         b                            #supported option: snp or s, indel or i, both or b, no or n
+1000G phase 3 allele frequencies:   b                            #supported option: snp or s, indel or i, both or b, no or n
+UK10K allele frequencies:           b                            #supported option: snp or s, indel or i, both or b, no or n
+ESP6500 allele frequencies:         b                            #supported option: snp or s, indel or i, both or b, no or n
+ExAC frequencies:                   b                            #supported option: snp or s, indel or i, both or b, no or n
+ExAC nonTCGA subset frequencies:    b                            #supported option: snp or s, indel or i, both or b, no or n
+ExAC nonpsych subset frequencies:   b                            #supported option: snp or s, indel or i, both or b, no or n
+gnomAD exomes frequencies:          b                            #supported option: snp or s, indel or i, both or b, no or n
+gnomAD genomes frequencies:         b                            #supported option: snp or s, indel or i, both or b, no or n
+RegulomeDB:                         b                            #supported option: snp or s, indel or i, both or b, no or n
+funseq like non-coding:             b                            #supported option: snp or s, indel or i, both or b, no or n
+funseq2 non-coding:                 b                            #supported option: snp or s, indel or i, both or b, no or n
+CADD:                               n                            #supported option: snp or s, indel or i, both or b, no or n
+CADDindel:                          n                            #supported option: indel or i, no or n
+DANN:                               b                            #supported option: snp or s, indel or i, both or b, no or n
+fathmm-MKL:                         b                            #supported option: snp or s, indel or i, both or b, no or n
+Eigen and EigenPC:                  b                            #supported option: snp or s, indel or i, both or b, no or n
+ORegAnno:                           b                            #supported option: snp or s, indel or i, both or b, no or n
+Topologically_Associating_Domains:  b                            #supported option: snp or s, indel or i, both or b, no or n
+ENCODE_TFBS:                        b                            #supported option: snp or s, indel or i, both or b, no or n
+ENCODE_Dnase:                       b                            #supported option: snp or s, indel or i, both or b, no or n
+EnhancerFinder:                     b                            #supported option: snp or s, indel or i, both or b, no or n
+SuperEnhancer:                      b                            #supported option: snp or s, indel or i, both or b, no or n
+FANTOM5_enhancer_permissive:        b                            #supported option: snp or s, indel or i, both or b, no or n
+FANTOM5_enhancer_robust:            b                            #supported option: snp or s, indel or i, both or b, no or n
+FANTOM5_enhancer_target:            b                            #supported option: snp or s, indel or i, both or b, no or n
+FANTOM5_enhancer_expression:        b                            #supported option: snp or s, indel or i, both or b, no or n
+FANTOM5_CAGE_peak_permissive:       b                            #supported option: snp or s, indel or i, both or b, no or n
+FANTOM5_CAGE_peak_robust:           b                            #supported option: snp or s, indel or i, both or b, no or n
+EnsemblRB_Overviews:                b                            #supported option: snp or s, indel or i, both or b, no or n
+EnsemblRB_TFBS:                     b                            #supported option: snp or s, indel or i, both or b, no or n
+dbNSFP_variant:                     s                            #supported option: snp or s, no or n
+EnsemblRB_Cell_Type_Activity:       b                            #supported option: snp or s, indel or i, both or b, no or n
+EnsemblRB_Cell_Type_Segmentations:  b                            #supported option: snp or s, indel or i, both or b, no or n
+ENCODE_Cell_Type_Segmentations:     b                            #supported option: snp or s, indel or i, both or b, no or n
+Roadmap_peak_calls:                 b                            #supported option: snp or s, indel or i, both or b, no or n
+GenoSkyline-Plus:                   b                            #supported option: snp or s, indel or i, both or b, no or n
+Roadmap_sample_ids:                 Other                    #Roadmap epigenome IDs separated by ",", such as "E001,E002"; or continuous IDs, such as "E067-E070"; or one (or multiple separated by ',')of the groups: "Adipose,Blood&T-cell,Brain,Digestive,ENCODE,Epithelial,ES-deriv,ESC,Heart,HSC&B-cell,IMR90,iPSC,Mesench,Muscle,Myosat,Neurosph,Other,Sm.Muscle,Thymus"; or a combination of the three presentations. applicable only when Roadmap_peak_calls or GenoSkyline-Plus is not "n" 

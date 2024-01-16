@@ -1,0 +1,139 @@
+---
+title: "CNV scatterplot"
+author: "Bioinfo Team, BerryGenomics"
+output: html_document
+---
+
+---
+File: cnv_html_plot.Rmd
+
+Description: This code is used for cnv plot in html.
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, results = "hide")
+```
+
+
+
+
+
+```{r, echo=FALSE}
+
+  scatterplot <- function(da, name, sex, ideoCyto, supplement) {
+    
+    if(length(supplement) == 0){
+      homo_region = NULL
+    }else{
+      homo_region = t(sapply(1:length(supplement), function(x) as.numeric(strsplit(supplement,' ')[[x]])))
+    }
+    
+    x.coor = da[1, ]
+    chrNum = 24
+    for (i in 1:chrNum) {
+      chr = i
+      x.index = which(x.coor<Length_chr[i])
+      x.cur = x.coor[x.index]
+      y.cur = da[2+(i-1)*2, ][x.index]
+      l.cur = da[3+(i-1)*2, ][x.index]
+      Nchr = paste('chr', i, sep='')
+      if (i == 23) { Nchr = 'chrX'}
+      if (i == 24) { Nchr = 'chrY'}
+      x.lab.offset = max(x.cur)/2000
+      par(mai=c(0.82, 1.02, 0.82,0.42))
+      if (i==23) {
+        Name = 'Chromosome X'
+      }else if (i==24) {
+        Name = 'Chromosome Y'
+      }else{
+        Name = paste('Chromosome ',i, sep='')
+      }
+      Encoding(Name) = 'UTF-8'
+      Ylab = 'Copy Number'
+      Encoding(Ylab) = 'UTF-8'
+      Xlab = 'Position (Mb)'
+      Encoding(Xlab) = 'UTF-8'
+     
+      plot(x.cur, y.cur, ylim=c(-1,4), type='n', main=Name, cex.main=1.75, cex.lab=1.75, xlab=Xlab, 
+           ylab=Ylab, axe=F, xlim=c(50*x.lab.offset, max(x.cur)-50*x.lab.offset), cex.lab=1.5)
+      
+      if (max(x.cur) >= 100000000) {
+        x.at = seq(from=0, by=20000000, to=max(x.cur)+20000000)
+        x.labels = seq(from=0, by=20, to=(max(x.cur)+20000000)/1000000)
+      }else{
+        x.at = seq(from=0, by=10000000, to=max(x.cur)+20000000)
+        x.labels = seq(from=0, by=10, to=(max(x.cur)+20000000)/1000000)
+      }
+      
+      axis(2, at=c(0,1,2,3,4), labels=c(0:4), cex.axis=1.5)
+      axis(1, at=x.at, labels=x.labels, cex.axis=1.5)
+      abline(h=c(0,1,2,3,4), lwd=2, lty=2, col='gray')
+      points(x.cur, y.cur, pch=20, cex=0.75, col=rgb(0.5,0.5,0.5,1))
+      lines(x.cur[!is.na(l.cur)&x.cur<centromereS[i]], l.cur[!is.na(l.cur)&x.cur<centromereS[i]],
+            lwd=2, col='blue')
+      lines(x.cur[!is.na(l.cur)&x.cur>centromereE[i]], l.cur[!is.na(l.cur)&x.cur>centromereE[i]],
+            lwd=2, col='blue')
+      
+      shifting = 0.02
+      yh = 0
+      if ((i==23&sex=='M')|i==24) { yh = -1 }
+      for (j in x.cur[is.na(y.cur)]) {
+        segments(j-shifting, 2+yh, j+shifting, 2+yh, lwd=4, col='red')
+      }
+      segments(centromereS[i], 2+yh, centromereE[i], 2+yh, lwd=8)
+      #### add cytoband plot
+      colnames(ideoCyto) <- c("chrom", "chromStart", "chromEnd", "name", "gieStain")
+      chrCyto <- subset(ideoCyto, chrom==Nchr)
+      gieStainCol <- data.frame(type=c("stalk", "gvar", "acen", "gneg", "gpos25", "gpos50","gpos75","gpos100"),
+                                Col=c("gray50", "gray50", "gray50", "gray100", "gray75", "gray50", "gray25", "gray0"),
+                                stringsAsFactors=F)
+      chrCyto$Col <- unlist(lapply(chrCyto$gieStain, FUN=function(x) {gieStainCol$Col[gieStainCol$type == x]}))
+      
+      for(i in seq(1, nrow(chrCyto))) {
+        tmpStart <- chrCyto[i,2]
+        tmpEnd <- chrCyto[i,3]
+        tmpCol <- chrCyto[i,6]
+        if (chrCyto[i,5]=="acen" & substring(chrCyto[i,4], 1, 1)=="p") {
+          polygon( x=c(tmpStart, tmpEnd, tmpStart), y=c(-0.3, -0.6 , -0.9), col="orangered4" )
+        }else if (chrCyto[i,5]=="acen" & substring(chrCyto[i,4], 1, 1)=="q") {
+          polygon( x=c(tmpEnd, tmpStart, tmpEnd), y=c(-0.3, -0.6 , -0.9), col="orangered4" )
+        }else{
+          rect(chrCyto[i,2], -0.3, chrCyto[i,3], -0.9, col=tmpCol, lwd=1)
+        }
+        if (chrCyto[i,5]!='acen' & tmpEnd-tmpStart > 60*max(x.cur)/2000) {
+          if (chrCyto[i,5] %in% c("stalk", "gvar", "acen", "gpos50", "gpos75", "gpos100")) {
+            text(x=(tmpEnd+tmpStart)/2, y=-0.6, labels=chrCyto[i, 4], cex=1.25, col='white')
+          }else{
+            text(x=(tmpEnd+tmpStart)/2, y=-0.6, labels=chrCyto[i, 4], cex=1.25, col='black')
+          }
+        }
+      }
+      
+      if(!is.null(homo_region)){
+      for(j in 1:nrow(homo_region)){
+        if(homo_region[j,1] == chr){
+          polygon(c(x.cur[homo_region[j,2]],x.cur[homo_region[j,3]],x.cur[homo_region[j,3]],x.cur[homo_region[j,2]]),
+                  c(4.2,4.2,-0.2,-0.2),col = rgb(0,255,255,80,maxColorValue=255),border = NA)
+        }
+      }
+    }
+      
+      
+      box()
+    
+    }
+  }
+  
+
+```
+
+
+```{r pressure, dev="png", dev.args=list(type="cairo"), fig.retina=1.5,dpi=50}
+
+  
+  scatterplot(info$view, info$sampleName, info$sex, info$ideoCyto, info$supplement)
+
+
+```
+
+

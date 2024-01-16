@@ -1,0 +1,47 @@
+chrs <- paste('chr', c(1:24), sep='')
+
+loessFit <- function(outprefix, rc, gc){
+  
+  rc <- as.vector(rc)
+  rc <- rc[!is.na(rc)]
+  gc <- as.vector(gc)
+  gc <- gc[!is.na(gc)]
+  
+  md = median(rc, na.rm=T)
+  gc = gc[md-50 < rc & rc < md+50]
+  rc = rc[md-50 < rc & rc < md+50]
+
+  ## normal loess
+  Loess <- loess(rc ~ gc)
+  loess.fittedRC  <- predict(Loess, gc[order(gc)])
+  return(Loess)
+}
+
+loess_gc_correction <- function(da_rd,da_gc,sampleName,output_dir){
+  
+  RCgcCorrection.tatol.reads <- sum(da_rd,ma.rm=T)
+  normal_count <- sum(as.numeric(da_rd))  
+  
+  MedianRC <- median(da_rd, na.rm=T)
+  Loess <- loessFit(outprefix, da_rd, da_gc)
+  loessFited <- predict(Loess, as.vector(da_gc))
+  
+  RCgcCorrection <- ( MedianRC / loessFited ) * da_rd
+  RCgcCorrection[RCgcCorrection <= 0] <- NA
+  
+  return(RCgcCorrection)
+}
+
+args = commandArgs(trailingOnly=TRUE)
+d <- read.table(args[1],header=TRUE)
+total = as.numeric(args[3])
+sampleName = args[4]
+output_dir = args[5]
+
+d$count[d$filter == 1] <- NA
+d$gc[d$filter == 1] <- NA
+d$mapab[d$filter == 1] <- NA
+d$cor <- loess_gc_correction((d$count+1)*(10^12)/(d$mapab*total*d$len), d$gc, sampleName, output_dir)
+write.table(d, file=args[2], quote=F, col.name=T, row.names=F, sep="\t")
+
+

@@ -1,0 +1,6 @@
+args = commandArgs(trailingOnly=TRUE)
+library('ggplot2')
+dat <- read.table(args[1], header=TRUE)
+pdf(args[2])
+ggplot(dat, aes(x=Insert, colour=Class)) + geom_density() + xlim(35,600)
+dev.off()

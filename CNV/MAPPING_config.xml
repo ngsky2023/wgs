@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MAPPING_CONFIG>
+  <THREAD>40</THREAD>
+  <STD_LIB>
+      <INDEX_FILE_PATH>/share/public/software/IT_map/index4.idx</INDEX_FILE_PATH>
+      <STD_LIB_PATH>/share/public/software/IT_map/stdlib.bed</STD_LIB_PATH>
+    <STD_LIB_CAP>21</STD_LIB_CAP>
+  </STD_LIB>
+  <MAPPING>
+    <ANALYSIS_TYPE>NIPT</ANALYSIS_TYPE>
+    <SE_PE>SE</SE_PE>
+    <BASE_BEGIN>0</BASE_BEGIN>
+    <SEQ_LEN>36</SEQ_LEN>
+    <Q30>0.9</Q30>
+    <UNIQUE>1</UNIQUE>
+    <MAPPING_OUTPUT>1</MAPPING_OUTPUT>
+    <QC_OUTPUT>1</QC_OUTPUT>
+    <REF_FILE_PATH>/share/public/software/IT_map/</REF_FILE_PATH>
+    <CHR_PQ_FILE>chr_pq_ref</CHR_PQ_FILE>
+  </MAPPING>
+</MAPPING_CONFIG>

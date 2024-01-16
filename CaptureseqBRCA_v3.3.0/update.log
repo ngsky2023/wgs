@@ -1,0 +1,26 @@
+20170309	Annotation.pl	update avsnp147 clinvar20160302
+20170310	QC_exome_mem.pl	samtools depth add -m 1000000
+20170310	QC_exon_cov.pl	samtools depth add -m 1000000; miss empty depth; samtools path
+20170313	QC.pl	anno_table.Tp.pl for SNP, not anno_table.TP.pl
+20170313	Map_Realign.pl	new version,samtools sort -o 
+#/share/software/software/samtools-1.3_install/bin/samtools
+20170517	QC_exome_mem.pl	R plot
+20170517	main_pipe.pl	Usage,no remove duplication reads
+20170601	S1explain_verscreen.pl	4gene.list to 55gene.list
+20170601	S1explain.pl  4gene.list to 55gene.list
+20170628	Annotation.pl	hg19_refGene.txt to hg19_refGene55.txt	
+20170628	Clinical_Level_single.pl	PopFreqMax,BZ8K for  ba1
+20170628	main_pipe.pl	kill ps
+20170628	Annotation.pl	clinvar 20170130
+20170818	transvar,indel left_alignment =>right_alignment;result_info_test(report test);Clinvar20170711。
+20171218	exon/intron 10bp interpretation
+20171130	55gene.list  -->   55genes_Clinvar20171031.list
+20180316	55genes --> 57genes    Databases updata
+20180329	ClinVar20180326_interpretation/variant_summary_cita_GRCh37_NM.txt
+20180330	Gene_Disorder_AA2_expand_20180326.txt
+20180412	Clinical_Level_single.pl  Polyphen2_HVAR_score[53列] -> Polyphen2_HVAR_pred[54列]
+20180416	SearchIndel.additional.pl  55genes -> 57genes
+20180418	revise clinvar alleleid for right mode variants in level file
+20180418	KPBD;KPDB_P -> KPBD(clinvar \d+);KPDB_P(clinvar \d+)
+20180516	ACMG_pre_20180507.txt
+20180516	dbnsfp33a,spidex	

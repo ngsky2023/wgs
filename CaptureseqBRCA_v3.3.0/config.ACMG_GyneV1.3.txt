@@ -1,0 +1,44 @@
+ref = /share/work1/wangrr/DB/hg19/hg19AddVirus.fa
+dbsnp = /share/public/database/dbSNP/147/ncbi.hg19_dbsnp147.vcf 
+bed = /share/work1/wangrr/DB/exome/IDT39_WES_rmOverlap_ext_ant_97_hl.bed
+gene_info = /share/public/database/KEGG/9606.geneid2go_kegg.xls
+MustGiven = /share/work2/yangrutao/databases/patho.mustgiven_55genes.txt
+#MustGiven=/home/zhangyu/workdir/exon_seq/Annotate/genetic_must/Gynecological_tumor/48gene.vcf.v1.txt;/home/zhangyu/workdir/exon_seq/Annotate/genetic_must/x-linkage/final/x-link_v1.sum.txt
+Xindel = /share/public/database/Gynecological_cancer_backup/IPDB/ver4/x-link_v1.indel_transfor.txt
+hgvs = /share/public/database/dbSNP/141/download/dbsnp141.total.hgvs
+
+bwa_param_mem = -t 6 -M
+call_variant = -min 4 -max 100000
+bwa = /share/public/software/bwa/0.7.15/bwa
+samtools = /share/public/software/samtools/1.4/samtools
+picard = /share/public/software/picard/1.5.7/
+#gatk = /share/public/software/GenomeAnalysisTK-2.5-2-gf57256b/GenomeAnalysisTK.jar
+gatk = /share/public/software/gatk/3.6/GenomeAnalysisTK-3.6.jar
+bcftools = /share/public/software/samtools/0.1.18/bcftools
+bedtools = /share/public/software/bedtools2/2.19.1/bin/
+annovar = /share/public/database/Annovar/2016Feb01/
+ruby = /share/public/software/ruby/2.4.1/bin/ruby
+ASNP = /share/public/software/Atlas2/v1.4.3/Atlas-SNP2/Atlas-SNP2.rb
+AINDEL = /share/public/software/Atlas2/v1.4.3/Atlas-Indel2/Atlas-Indel2.rb
+Platypus = /share/public/software/Platypus/v0.8.1/Platypus.py
+vardict = /share/public/software/VarDict/vardict.pl
+SNP_software = GATK (or samtools)
+indel_software = GATK (or samtools or pindel)
+flexbar = /share/public/software/flexbar/2.5.0/flexbar
+
+rd = /share/seq_dir/ngs/RD_Onc/IBFC2018028/
+#rd = /share/seq_dir/ngs/OC/NICT-GeneticTumor/
+#rd = /share/seq_dir/ngs/NICT-FemaleTumor
+#rd = /share/seq_dir1/Item*/NICT-FemaleTumor/
+adapter =-k 200 -a /share/work1/yangrt/workdir/databases/adaptor/truseq
+random = NO
+Interpretation =ACMG_Gyne;Gynecological_fast;Xlinked;ACMG
+
+#--------------------
+#result.xls_cutoff
+Pdepth=30
+Pratio=0.2
+Vdepth=30
+Vratio=0.2
+Bdepth=30
+Bratio=0.2

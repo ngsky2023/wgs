@@ -1,0 +1,6 @@
+#Two mutually exclusive cytidine-to-thymidine mutations, C228T and C250T (chr5:1295228 C>T and 1295250 C>T; hg19), positioned at 124 and 146 base pairs upstream of the ATG translational start site of TERT, respectively, are found in ~70% of melanomas, 80¨C90% of glioblastoma multiforme, 60% of hepatocellular carcinoma, 60% of bladder cancer, 70% of basal cell carcinoma, 50% of cutaneous squamous cell carcinoma and up to 30% of thyroid cancers. Other recurrent but much less frequent mutations in the TERT promoter (occurring at positions chr5: 1295228 C>A, 1295242¨C1295243 CC>TT and 1295161A>C) have also been observed.
+chr5	1295161	1295161	T	G
+chr5	1295228	1295228	G	A
+chr5	1295228	1295228	G	T
+chr5	1295242	1295243	GG	AA
+chr5	1295250	1295250	G	A
