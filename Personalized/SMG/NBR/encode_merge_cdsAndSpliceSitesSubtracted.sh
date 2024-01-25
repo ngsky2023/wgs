@@ -1,0 +1,1 @@
+/share/work1/wangrr/local/miniconda3/lib/R/bin/Rscript /share/Onc_KYproject/hanwj4457/analysis/project/kongyan_jiayan_zhiduan+niamo20201209/acral_55/SMG/NBR/find_noncoding_drivers_precomp_correctoverlaps_hanwj.R mutations.txt `pwd`/Regions/encode_merge_cdsAndSpliceSitesSubtracted.bed

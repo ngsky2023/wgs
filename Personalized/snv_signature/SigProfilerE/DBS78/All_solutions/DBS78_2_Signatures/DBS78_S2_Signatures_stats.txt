@@ -1,0 +1,3 @@
+Signatures	Stability	Total Mutations
+DBS78A	0.998	1085
+DBS78B	0.977	630

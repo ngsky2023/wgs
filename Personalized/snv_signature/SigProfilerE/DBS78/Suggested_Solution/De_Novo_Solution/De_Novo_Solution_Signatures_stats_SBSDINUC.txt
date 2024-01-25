@@ -1,0 +1,4 @@
+Samples	Stability	Total Mutations
+DBS78A	0.998	906
+DBS78B	0.981	524
+DBS78C	0.895	285

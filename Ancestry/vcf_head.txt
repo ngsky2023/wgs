@@ -1,0 +1,7 @@
+##fileformat=VCFv4.1
+###FILTER=<ID=PASS,Description="All filters passed">
+###fileDate=20210603
+###source=strelka
+###source_version=2.8.4
+###startTime=Thu Jun  3 09:36:18 2021
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO

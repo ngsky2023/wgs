@@ -1,0 +1,127 @@
+THIS FILE CONTAINS THE METADATA ABOUT SYSTEM AND RUNTIME
+
+
+-------System Info-------
+Operating System Name: Linux
+Nodename: node068.local
+Release: 2.6.32-642.el6.x86_64
+Version: #1 SMP Wed Apr 13 00:51:26 EDT 2016
+
+-------Python and Package Versions------- 
+Python Version: 3.7.3
+Sigproextractor Version: 1.0.4
+SigprofilerPlotting Version: 1.0.10
+SigprofilerMatrixGenerator Version: 1.0.26
+Pandas version: 1.0.1
+Numpy version: 1.18.2
+Scipy version: 1.4.1
+Scikit-learn version: 0.22.1
+
+-------Vital Parameters Used for the execution -------
+input_type: vcf
+inputdata: snv
+startProcess: 1
+endProcess: 15
+totalIterations: 1000
+cpu: 20
+refgen: GRCh37
+genome_build: GRCh37
+mtype: default 
+init: alexandrov-lab-custom
+
+-------Date and Time Data------- 
+Date and Clock time when the execution started: 2022-05-10 10:49:50.107557
+
+Signature extraction for SBS96 completed for 1 signatures for 0:01:29.854610! TimeStamp: 2022-05-10 10:57:01.866893
+
+Signature extraction for SBS96 completed for 2 signatures for 0:01:48.843092! TimeStamp: 2022-05-10 10:58:53.588799
+
+Signature extraction for SBS96 completed for 3 signatures for 0:02:38.570149! TimeStamp: 2022-05-10 11:01:34.867427
+
+Signature extraction for SBS96 completed for 4 signatures for 0:02:28.497372! TimeStamp: 2022-05-10 11:04:08.086030
+
+Signature extraction for SBS96 completed for 5 signatures for 0:04:02.342185! TimeStamp: 2022-05-10 11:08:15.986502
+
+Signature extraction for SBS96 completed for 6 signatures for 0:05:12.014382! TimeStamp: 2022-05-10 11:13:34.618007
+
+Signature extraction for SBS96 completed for 7 signatures for 0:07:07.292994! TimeStamp: 2022-05-10 11:20:48.414975
+
+Signature extraction for SBS96 completed for 8 signatures for 0:07:07.913171! TimeStamp: 2022-05-10 11:28:01.936728
+
+Signature extraction for SBS96 completed for 9 signatures for 0:07:52.169204! TimeStamp: 2022-05-10 11:36:01.730634
+
+Signature extraction for SBS96 completed for 10 signatures for 0:09:10.821425! TimeStamp: 2022-05-10 11:45:19.714778
+
+Signature extraction for SBS96 completed for 11 signatures for 0:11:18.608250! TimeStamp: 2022-05-10 11:56:45.889455
+
+Signature extraction for SBS96 completed for 12 signatures for 0:11:05.532480! TimeStamp: 2022-05-10 12:07:58.286671
+
+Signature extraction for SBS96 completed for 13 signatures for 0:13:15.211800! TimeStamp: 2022-05-10 12:21:23.011828
+
+Signature extraction for SBS96 completed for 14 signatures for 0:15:30.058276! TimeStamp: 2022-05-10 12:37:02.192953
+
+Signature extraction for SBS96 completed for 15 signatures for 0:17:25.767509! TimeStamp: 2022-05-10 12:54:36.726106
+
+Signature extraction for DBS78 completed for 1 signatures for 0:01:21.144586! TimeStamp: 2022-05-10 12:56:27.809802
+
+Signature extraction for DBS78 completed for 2 signatures for 0:01:34.179290! TimeStamp: 2022-05-10 12:58:03.930853
+
+Signature extraction for DBS78 completed for 3 signatures for 0:01:29.373686! TimeStamp: 2022-05-10 12:59:35.997001
+
+Signature extraction for DBS78 completed for 4 signatures for 0:01:36.309561! TimeStamp: 2022-05-10 13:01:15.101806
+
+Signature extraction for DBS78 completed for 5 signatures for 0:01:39.952876! TimeStamp: 2022-05-10 13:02:58.174099
+
+Signature extraction for DBS78 completed for 6 signatures for 0:01:49.052523! TimeStamp: 2022-05-10 13:04:52.866782
+
+Signature extraction for DBS78 completed for 7 signatures for 0:01:55.040962! TimeStamp: 2022-05-10 13:06:51.901707
+
+Signature extraction for DBS78 completed for 8 signatures for 0:02:07.528610! TimeStamp: 2022-05-10 13:09:06.248506
+
+Signature extraction for DBS78 completed for 9 signatures for 0:02:09.629594! TimeStamp: 2022-05-10 13:11:21.674381
+
+Signature extraction for DBS78 completed for 10 signatures for 0:02:16.955056! TimeStamp: 2022-05-10 13:13:43.749803
+
+Signature extraction for DBS78 completed for 11 signatures for 0:02:29.438807! TimeStamp: 2022-05-10 13:16:18.880125
+
+Signature extraction for DBS78 completed for 12 signatures for 0:02:45.026117! TimeStamp: 2022-05-10 13:19:10.085750
+
+Signature extraction for DBS78 completed for 13 signatures for 0:02:55.091157! TimeStamp: 2022-05-10 13:22:11.243087
+
+Signature extraction for DBS78 completed for 14 signatures for 0:03:06.180035! TimeStamp: 2022-05-10 13:25:24.966198
+
+Signature extraction for DBS78 completed for 15 signatures for 0:03:22.521840! TimeStamp: 2022-05-10 13:28:55.833061
+
+Signature extraction for ID83 completed for 1 signatures for 0:01:24.159847! TimeStamp: 2022-05-10 13:30:36.195995
+
+Signature extraction for ID83 completed for 2 signatures for 0:01:36.269910! TimeStamp: 2022-05-10 13:32:14.196848
+
+Signature extraction for ID83 completed for 3 signatures for 0:02:32.272988! TimeStamp: 2022-05-10 13:34:49.133914
+
+Signature extraction for ID83 completed for 4 signatures for 0:03:06.998789! TimeStamp: 2022-05-10 13:37:58.940814
+
+Signature extraction for ID83 completed for 5 signatures for 0:03:49.447665! TimeStamp: 2022-05-10 13:41:50.949695
+
+Signature extraction for ID83 completed for 6 signatures for 0:04:16.877228! TimeStamp: 2022-05-10 13:46:12.560964
+
+Signature extraction for ID83 completed for 7 signatures for 0:04:58.082230! TimeStamp: 2022-05-10 13:51:15.899599
+
+Signature extraction for ID83 completed for 8 signatures for 0:05:22.278838! TimeStamp: 2022-05-10 13:56:41.538426
+
+Signature extraction for ID83 completed for 9 signatures for 0:06:04.318026! TimeStamp: 2022-05-10 14:02:50.420631
+
+Signature extraction for ID83 completed for 10 signatures for 0:06:51.593894! TimeStamp: 2022-05-10 14:09:47.682119
+
+Signature extraction for ID83 completed for 11 signatures for 0:07:26.690368! TimeStamp: 2022-05-10 14:17:20.205059
+
+Signature extraction for ID83 completed for 12 signatures for 0:07:49.394396! TimeStamp: 2022-05-10 14:25:15.136962
+
+Signature extraction for ID83 completed for 13 signatures for 0:08:57.593250! TimeStamp: 2022-05-10 14:34:18.580771
+
+Signature extraction for ID83 completed for 14 signatures for 0:09:18.837099! TimeStamp: 2022-05-10 14:43:43.307128
+
+Signature extraction for ID83 completed for 15 signatures for 0:10:15.768859! TimeStamp: 2022-05-10 14:54:05.239662
+
+Date and Clock time when the execution ended: 2022-05-10 14:54:17.202448
+-------Job Status------- 
+Analysis of mutational signatures completed successfully! Total execution time: 4:04:27.094891. Results can be found in: [SigProfilerE] folder

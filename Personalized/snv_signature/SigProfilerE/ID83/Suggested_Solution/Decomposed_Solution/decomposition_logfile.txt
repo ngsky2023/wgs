@@ -1,0 +1,55 @@
+############################ Signature Decomposition Details ################################
+
+
+Context Type: INDEL
+Genome Build: GRCh37
+!!!!!!!!!!!!!!!!!!!!!!! LAYER: 1 !!!!!!!!!!!!!!!!!!!!!!!!!
+Best Signature Composition [0, 1]
+L2 Error % 0.26
+Cosine Similarity 0.97
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!! LAYER: 2 !!!!!!!!!!!!!!!!!!!!!!!!!
+Best Signature Composition [0, 1]
+L2 Error % 0.26
+Cosine Similarity 0.97
+
+#################### Final Composition #################################
+[0, 1]
+L2 Error % 0.26
+Cosine Similarity 0.97
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!! LAYER: 0 !!!!!!!!!!!!!!!!!!!!!!!!!
+Best Signature Composition [4]
+L2 Error % 0.99
+Cosine Similarity 0.53
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!! LAYER: 1 !!!!!!!!!!!!!!!!!!!!!!!!!
+Best Signature Composition [2, 4]
+L2 Error % 0.85
+Cosine Similarity 0.64
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!! LAYER: 2 !!!!!!!!!!!!!!!!!!!!!!!!!
+Best Signature Composition [1, 2, 4]
+L2 Error % 0.7
+Cosine Similarity 0.79
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!! LAYER: 3 !!!!!!!!!!!!!!!!!!!!!!!!!
+Best Signature Composition [1, 2, 4, 9]
+L2 Error % 0.65
+Cosine Similarity 0.8
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!! LAYER: 4 !!!!!!!!!!!!!!!!!!!!!!!!!
+Best Signature Composition [1, 2, 4, 9]
+L2 Error % 0.65
+Cosine Similarity 0.8
+
+#################### Final Composition #################################
+[1, 2, 4, 9]
+L2 Error % 0.65
+Cosine Similarity 0.8

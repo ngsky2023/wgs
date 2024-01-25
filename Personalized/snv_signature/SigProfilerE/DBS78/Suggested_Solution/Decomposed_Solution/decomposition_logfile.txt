@@ -1,0 +1,90 @@
+############################ Signature Decomposition Details ################################
+
+
+Context Type: DINUC
+Genome Build: GRCh37
+!!!!!!!!!!!!!!!!!!!!!! LAYER: 1 !!!!!!!!!!!!!!!!!!!!!!!!!
+Best Signature Composition [0, 10]
+L2 Error % 0.19
+Cosine Similarity 1.0
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!! LAYER: 2 !!!!!!!!!!!!!!!!!!!!!!!!!
+Best Signature Composition [0, 5, 10]
+L2 Error % 0.11
+Cosine Similarity 1.0
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!! LAYER: 3 !!!!!!!!!!!!!!!!!!!!!!!!!
+Best Signature Composition [0, 5, 10]
+L2 Error % 0.11
+Cosine Similarity 1.0
+
+#################### Final Composition #################################
+[0, 5, 10]
+L2 Error % 0.11
+Cosine Similarity 1.0
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!! LAYER: 0 !!!!!!!!!!!!!!!!!!!!!!!!!
+Best Signature Composition [8]
+L2 Error % 1.19
+Cosine Similarity 0.32
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!! LAYER: 1 !!!!!!!!!!!!!!!!!!!!!!!!!
+Best Signature Composition [5, 8]
+L2 Error % 1.01
+Cosine Similarity 0.48
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!! LAYER: 2 !!!!!!!!!!!!!!!!!!!!!!!!!
+Best Signature Composition [1, 5, 8]
+L2 Error % 0.84
+Cosine Similarity 0.69
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!! LAYER: 3 !!!!!!!!!!!!!!!!!!!!!!!!!
+Best Signature Composition [1, 3, 5, 8]
+L2 Error % 0.64
+Cosine Similarity 0.82
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!! LAYER: 4 !!!!!!!!!!!!!!!!!!!!!!!!!
+Best Signature Composition [1, 3, 4, 5, 8]
+L2 Error % 0.56
+Cosine Similarity 0.85
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!! LAYER: 5 !!!!!!!!!!!!!!!!!!!!!!!!!
+Best Signature Composition [1, 3, 4, 5, 8]
+L2 Error % 0.56
+Cosine Similarity 0.85
+
+#################### Final Composition #################################
+[1, 3, 4, 5, 8]
+L2 Error % 0.56
+Cosine Similarity 0.85
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!! LAYER: 0 !!!!!!!!!!!!!!!!!!!!!!!!!
+Best Signature Composition [4]
+L2 Error % 0.99
+Cosine Similarity 0.48
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!! LAYER: 1 !!!!!!!!!!!!!!!!!!!!!!!!!
+Best Signature Composition [2, 4]
+L2 Error % 0.9
+Cosine Similarity 0.49
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!! LAYER: 2 !!!!!!!!!!!!!!!!!!!!!!!!!
+Best Signature Composition [2, 4]
+L2 Error % 0.9
+Cosine Similarity 0.49
+
+#################### Final Composition #################################
+[2, 4]
+L2 Error % 0.9
+Cosine Similarity 0.49
