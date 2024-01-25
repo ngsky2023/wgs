@@ -41,7 +41,7 @@ git clone -b master git@github.com:ngsky2023/wgs.git
 
 ### 1.Help
 
-    python3 wgs/WGS.py --help
+    python3 WGS.py --help
 
 ```
  -h, --help            show this help message and exit
@@ -62,6 +62,12 @@ git clone -b master git@github.com:ngsky2023/wgs.git
 
 ### 2.Example
     
-    2.1 python3 wgs/WGS.py -i fastq.txt  -p pair.txt -o  run -c config.txt
+    2.1 python3 WGS.py -i fastq.txt  -p pair.txt -o  run -c config.txt
 
     2.2 nohup make -j 50 -f run/.run.job -k -s 2>nohup.out
+
+### Attention
+
+    1.Personalized and Ancestry analysis need to be run manually.
+    
+    2.Personalized analysis contain SnvInDel/CNV/SV Signatures，GISTIC, Kataegis, Whome Genome Double(WGD),  Significant Mutated Genes(SMG).
