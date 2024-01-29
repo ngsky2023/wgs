@@ -66,7 +66,7 @@ git clone -b master git@github.com:ngsky2023/wgs.git
 
     2.2 nohup make -j 50 -f run/.run.job -k -s 2>nohup.out
 
-### Attention
+## Attention
 
     1.Personalized and Ancestry analysis need to be run manually.
     
