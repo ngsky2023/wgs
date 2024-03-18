@@ -1,0 +1,56 @@
+Sample	name	Code	Age	Gender	Ulceration	Stage	Specimen Site	Specimen Type	Primary Site
+PGENE_1T	AM_003	PGENE-1	71	F	Yes	IV	right crus metastasis	metastasis	sole
+PGENE_2T	AM_008	PGENE-2	63	F	No	NA	right planta pedis	primary	sole
+PGENE_4T	AM_014	PGENE-4	55	F	No	III	left heel	primary	heel
+PGENE_5T	AM_016	PGENE-5	58	F	Yes	IV	right heel	primary	heel
+PGENE_6T	AM_019	PGENE-6	62	M	No	III	left planta pedis	primary	sole
+PGENE_8T	AM_021	PGENE-8	52	M	Yes	I	right planta pedis	primary	sole
+PGENE_9T	AM_028	PGENE-9	49	M	Yes	I	left palm	primary	hand
+PGENE_10T	AM_007	PGENE-10	64	F	NA	NA	left planta pedis	primary	sole
+RC596TH1	AM_029	RC596TH1	52	M	Yes	II	right planta pedis	primary	sole
+RC597TH1	AM_038	RC597TH1	51	F	No	NA	left planta pedis	primary	sole
+RC598TH1	AM_047	RC598TH1	46	F	No	II	right planta pedis	primary	sole
+RC599TH1	AM_048	RC599TH1	50	M	No	IV	left planta pedis	primary	sole
+RC602TH1	AM_054	RC602TH1	56	M	No	III	left little finger	primary	hand
+RC603TH1	AM_055	RC603TH1	71	M	Yes	III	right wrist	primary	hand
+AC_WGS_1T	AM_001	AC-WGS-1	68	M	Yes	III	left planta pedis	primary	sole
+AC_WGS_2T	AM_002	AC-WGS-2	60	F	Yes	III	right wrist	metastasis	hand
+AC_WGS_4	AM_004	AC-WGS-4	47	M	No	II	left heel	primary	heel
+AC_WGS_5	AM_005	AC-WGS-5	73	F	Yes	III	left little toe	primary	other
+AC_WGS_6	AM_006	AC-WGS-6	67	M	Yes	II	right heel	primary	heel
+AC_WGS_9T	AM_009	AC-WGS-9	53	M	Yes	IV	right planta pedis	primary	sole
+AC_WGS_10	AM_010	AC-WGS-10	64	F	Yes	II	left ring finger	primary	hand
+AC_WGS_44	AM_044	AC-WGS-44	74	F	No	I	left planta pedis	primary	sole
+AC_WGS_12	AM_012	AC-WGS-12	67	M	Yes	III	right lateral malleolus	primary	other
+AC_WGS_13T	AM_013	AC-WGS-13	79	M	Yes	III	right heel	primary	heel
+AC_WGS_15	AM_015	AC-WGS-15	65	M	Yes	II	left planta pedis	primary	sole
+AC_WGS_17	AM_017	AC-WGS-17	79	M	Yes	III	right planta pedis	primary	sole
+AC_WGS_18T	AM_018	AC-WGS-18	53	F	No	III	right heel	primary	heel
+AC_WGS_20T	AM_020	AC-WGS-20	NA	F	NA	NA	right planta pedis	primary	sole
+AC_WGS_22	AM_022	AC-WGS-22	56	M	No	III	right heel	primary	heel
+AC_WGS_23	AM_023	AC-WGS-23	53	M	Yes	II	right thumb	primary	hand
+AC_WGS_24	AM_024	AC-WGS-24	59	F	Yes	II	right heel	primary	heel
+AC_WGS_25	AM_025	AC-WGS-25	NA	F	NA	NA	left planta pedis	primary	sole
+AC_WGS_26	AM_026	AC-WGS-26	60	F	Yes	NA	left planta pedis	primary	sole
+AC_WGS_27	AM_027	AC-WGS-27	81	F	No	II	lateral of right foot	primary	other
+AC_WGS_30	AM_030	AC-WGS-30	75	M	Yes	III	left inguinal lymph nodes	metastasis	sole
+AC_WGS_31	AM_031	AC-WGS-31	33	F	No	II	right heel	primary	heel
+AC_WGS_32	AM_032	AC-WGS-32	51	M	No	II	right heel	primary	heel
+AC_WGS_33	AM_033	AC-WGS-33	56	M	Yes	NA	right index finger	primary	hand
+AC_WGS_34	AM_034	AC-WGS-34	47	M	No	II	right planta pedis	primary	sole
+AC_WGS_35	AM_035	AC-WGS-35	84	M	No	NA	right planta pedis	primary	sole
+AC_WGS_36	AM_036	AC-WGS-36	56	F	Yes	II	right heel	primary	heel
+AC_WGS_39	AM_039	AC-WGS-39	54	M	No	IV	right planta pedis	primary	sole
+AC_WGS_40	AM_040	AC-WGS-40	42	M	Yes	III	right middle finger	primary	hand
+AC_WGS_41	AM_041	AC-WGS-41	83	M	Yes	IV	right heel	primary	heel
+AC_WGS_42	AM_042	AC-WGS-42	30	F	No	I	left planta pedis	primary	sole
+AC_WGS_43	AM_043	AC-WGS-43	67	M	Yes	NA	left planta pedis	primary	sole
+AC_WGS_45	AM_045	AC-WGS-45	55	F	No	I	left heel	primary	heel
+AC_WGS_46	AM_046	AC-WGS-46	63	F	NA	NA	right heel	primary	heel
+AC_WGS_49	AM_049	AC-WGS-49	53	M	Yes	IV	right inguinal lymph node	metastasis	sole
+AC_WGS_50	AM_050	AC-WGS-50	49	M	Yes	III	left inguinal lymph node	metastasis	sole
+AC_WGS_51	AM_051	AC-WGS-51	68	F	Yes	II	left inguinal lymph node	metastasis	sole
+AC_WGS_52	AM_052	AC-WGS-52	76	M	No	III	right inguinal lymph node	metastasis	other
+AC_WGS_53	AM_053	AC-WGS-53	43	M	Yes	IV	right elbow	metastasis	hand
+AC_WGS_11	AM_011	AC-WGS-11	24	F	No	IV	left planta pedis	primary	sole
+AC_WGS_37	AM_037	AC-WGS-37	71	M	NA	II	right thumb	primary	hand

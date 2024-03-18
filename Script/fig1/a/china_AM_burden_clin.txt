@@ -1,0 +1,92 @@
+048
+12
+>=16
+0
+500
+1000
+Translocation
+Deletion
+Duplication
+Inversion
+0
+50
+100
+cnv
+Deletion
+Loss CN1
+Copy Neutral LOH
+CN>=6
+CN2
+CN3−5
+Primary site
+WGD
+Gender
+Age
+Specimen type
+Stage
+I II III IV NA
+Primary Metastasis
+<58 >=58 NA
+F M
+non−WGD WGD
+hand
+heel
+sole
+other(foot)
+Mutation per 
+megabase SV count %genome
+AM_055
+AM_002
+AM_033
+AM_014
+AM_013
+AM_041
+AM_005
+AM_023
+AM_050
+AM_006
+AM_034
+AM_030
+AM_036
+AM_032
+AM_039
+AM_010
+AM_009
+AM_052
+AM_011
+AM_003
+AM_016
+AM_017
+AM_022
+AM_048
+AM_004
+AM_049
+AM_001
+AM_021
+AM_051
+AM_029
+AM_027
+AM_015
+AM_012
+AM_025
+AM_054
+AM_007
+AM_026
+AM_028
+AM_037
+AM_038
+AM_031
+AM_035
+AM_053
+AM_043
+AM_018
+AM_019
+AM_044
+AM_046
+AM_047
+AM_045
+AM_020
+AM_040
+AM_008
+AM_042
+AM_024
