@@ -68,6 +68,8 @@ git clone -b master git@github.com:ngsky2023/wgs.git
 
 ## Attention
 
-    1.Personalized and Ancestry analysis need to be run manually.
+    1.The Personalized and Ancestry analysis need to be run manually.
     
-    2.Personalized analysis contain SnvInDel/CNV/SV Signatures，GISTIC, Kataegis, Whome Genome Double(WGD),  Significant Mutated Genes(SMG).
+    2.The Personalized analysis contain SnvInDel/CNV/SV Signatures，GISTIC, Kataegis, Whome Genome Double(WGD),  Significant Mutated Genes(SMG).
+
+    3.The Script directory is the codes to generate the figures in the paper.
