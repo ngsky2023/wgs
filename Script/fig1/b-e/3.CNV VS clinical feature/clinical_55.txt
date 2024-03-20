@@ -32,7 +32,7 @@ AC_WGS_23	AM_023	AC-WGS-23	53	M	Yes	II	right thumb	primary	hand
 AC_WGS_24	AM_024	AC-WGS-24	59	F	Yes	II	right heel	primary	heel
 AC_WGS_25	AM_025	AC-WGS-25	NA	F	NA	NA	left planta pedis	primary	sole
 AC_WGS_26	AM_026	AC-WGS-26	60	F	Yes	NA	left planta pedis	primary	sole
-AC_WGS_27	AM_027	AC-WGS-27	81	F	No	II	lateral of right foot	primary	other
+AC_WGS_27	AM_027	AC-WGS-27	81	M	No	II	lateral of right foot	primary	other
 AC_WGS_30	AM_030	AC-WGS-30	75	M	Yes	III	left inguinal lymph nodes	metastasis	sole
 AC_WGS_31	AM_031	AC-WGS-31	33	F	No	II	right heel	primary	heel
 AC_WGS_32	AM_032	AC-WGS-32	51	M	No	II	right heel	primary	heel
